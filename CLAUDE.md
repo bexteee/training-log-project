@@ -114,8 +114,8 @@ three; WorkoutTest in progress, helper `setAtPosition`).
 7. Python wrapper: raw CSV -> clean CSV (time conversion), run the jar via subprocess, agreement % + first graph.
 8. Later: Google Form; AI-use disclosure notes for Sprint 3.
 Status 2026-11-12: tasks 1-3 done (36 tests, pushed). Repo renamed to training-log-project; local folder kept as
-training-log-api. Meeting agenda for Owen ready but not sent yet: `docs/Meeting Agenda - Vitor and Owen.docx`
-(Vitor will ask for it later). Now on task 5 (best-time lookup + effort %).
+training-log-api. Progress summary + questions for Owen: `docs/My Work So Far - Vitor.docx` (renamed from the meeting agenda on
+2026-11-16; repo access is open for Owen). Shared with Owen on 2026-11-16; answers expected 2026-11-17. Now on task 5 (best-time lookup + effort %).
 Status 2026-11-16: BestKey + BestTimes (addBestTime keeps faster; findReferenceTime race -> test -> empty;
 bestTimesCount) done, BestTimesTest with 11 tests; 47 tests total passing. Next: SwimSet.averageEffort(referenceTime).
 

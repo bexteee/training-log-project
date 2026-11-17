@@ -148,4 +148,39 @@ class SwimSetTest {
 
     assertEquals(4, test.repCount());
   }
+
+  @Test 
+  void validAverageEffort() {
+    SwimSet test = new SwimSet(1, StrokeType.FREESTYLE, 50, 60, List.of(25.0, 25.5, 26.0, 30.0));
+
+    double averageEffort = test.averageEffort(24.00);
+
+    assertEquals(90.61, averageEffort, 0.01);
+  }
+
+  @Test 
+  void oneRepAverageEffort() {
+    SwimSet test = new SwimSet(1, StrokeType.FREESTYLE, 50, 60, List.of(24.0));
+
+    double averageEffort = test.averageEffort(24.00);
+
+    assertEquals(100.0, averageEffort, 0.01);
+  }
+
+  @Test 
+  void fasterThanReferenceAbove100() {
+    SwimSet test = new SwimSet(1, StrokeType.FREESTYLE, 50, 60, List.of(23.80));
+
+    double averageEffort = test.averageEffort(24.00);
+
+    assertEquals(100.84, averageEffort, 0.01);
+  }
+
+  @Test 
+  void zeroReferenceTimeRejected() {
+    SwimSet test = new SwimSet(1, StrokeType.FREESTYLE, 50, 60, List.of(23.80));
+
+    assertThrows(IllegalArgumentException.class, 
+    () -> test.averageEffort(0));
+  }
 }

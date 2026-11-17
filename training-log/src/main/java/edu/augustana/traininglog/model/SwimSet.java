@@ -55,11 +55,28 @@ public record SwimSet(int position, StrokeType stroke, double repDistance, doubl
   public double averageRest() {
     double sum = 0.0;
 
-    for (double time : repTimes) {
-      sum += Math.max(0.0, sendOffInterval - time);
+    for (double repTime : repTimes) {
+      sum += Math.max(0.0, sendOffInterval - repTime);
     }
 
     double average = sum / repTimes.size();
+
+    return average;
+  }
+
+  // average effort % of the set, takes the swimmer's reference time
+  public double averageEffort(double referenceTime) {
+    if(referenceTime <= 0) {
+      throw new IllegalArgumentException("reference Time must be greater than 0.");
+    }
+
+    double efforts = 0.0;
+
+    for(double repTime : repTimes) {
+      efforts += (referenceTime / repTime) * 100;
+    }
+
+    double average = efforts / repTimes.size();
 
     return average;
   }
