@@ -12,7 +12,7 @@ class RaceBestTest {
   }
 
   @Test
-  void validRaceBestFloatNums() {
+  void validRaceBestDecimalDistance() {
     RaceBest rb = new RaceBest("A01", StrokeType.FREESTYLE, 12.5, BestKind.RACE, StartType.DIVE, 8.0, LocalDate.of(2025, 2, 6));
 
     assertEquals(12.5, rb.distance(), 0.001);
@@ -46,7 +46,8 @@ class RaceBestTest {
     );
   }
 
-  @Test void futureDate() {
+  @Test 
+  void futureDate() {
     assertThrows(IllegalArgumentException.class,
       () -> new RaceBest("A01", StrokeType.FREESTYLE, 50, BestKind.RACE, StartType.DIVE, 21.40, LocalDate.now().plusDays(10))
     );

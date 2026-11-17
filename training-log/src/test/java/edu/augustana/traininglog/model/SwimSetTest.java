@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 class SwimSetTest {
   @Test 
-  void validAverage() {
+  void validAverageRest() {
     SwimSet test = new SwimSet(1, StrokeType.FREESTYLE, 50, 60, List.of(25.0, 25.5, 26.0, 30.0));
 
     double averageTest = test.averageRest();
@@ -21,7 +21,7 @@ class SwimSetTest {
   }
 
   @Test
-  void repSlower() {
+  void oneRepSlowerThanInterval() {
     SwimSet test = new SwimSet(1, StrokeType.FREESTYLE, 100, 90, List.of(88.0, 92.00));
 
     double averageRest = test.averageRest();
@@ -30,7 +30,7 @@ class SwimSetTest {
   }
 
   @Test 
-  void floatNumDIstance() {
+  void decimalDistance() {
     SwimSet test = new SwimSet(1, StrokeType.FREESTYLE, 12.5, 30, List.of(8.0, 8.5, 9.0));
 
     assertEquals(12.5, test.repDistance(), 0.001);
@@ -59,7 +59,7 @@ class SwimSetTest {
   }
 
   @Test
-  void lowerReps() {
+  void manyShortReps() {
     SwimSet test = new SwimSet(1, StrokeType.FREESTYLE, 15, 60, List.of(8.0, 8.0, 8.0, 8.0, 8.0, 8.0, 8.0, 8.0, 8.0, 8.0));
 
     double averageRest = test.averageRest();
@@ -70,7 +70,7 @@ class SwimSetTest {
   }
 
   @Test 
-  void invalidRound() {
+  void invalidPosition() {
     assertThrows(IllegalArgumentException.class,
      () -> new SwimSet(-1, StrokeType.FREESTYLE, 50, 60, List.of(25.0, 25.5, 26.0, 30.0))
     );
@@ -133,8 +133,8 @@ class SwimSetTest {
     );
   }
 
+  // the set must not keep a reference, changing the original list doesn’t change the set
   @Test
-  // test to check if the set keeps a refrence to the original list
   void changeSet() {
     List<Double> changeSet = new ArrayList<>();
     changeSet.add(40.0);

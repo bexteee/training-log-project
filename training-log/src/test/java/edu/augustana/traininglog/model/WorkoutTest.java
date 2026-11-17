@@ -32,7 +32,7 @@ class WorkoutTest {
   }
 
   @Test 
-  void emptyAthlete() {
+  void emptyAthleteId() {
     List<SwimSet> set  = List.of(setAtPosition(1));
 
     assertThrows(IllegalArgumentException.class,
