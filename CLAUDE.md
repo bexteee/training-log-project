@@ -1,8 +1,14 @@
-# Training Log API
+# Training Log Project
+
+Project name since 2026-11-12: "Training Log Project" (training-log-project). It is a rule-based classification
+program (Java core + Python wrapper), not an API. GitHub repository: https://github.com/bexteee/training-log-project
+(renamed from training-log-api on 2026-11-12; the local folder may still be called `training-log-api`).
 
 Semester CS course project (algorithms/data structures, performance analysis). Team: Vitor Sa, Owen Bartee
 (Andy left the group in October 2026). Instructor: Marcus Birkenkrahe.
-Java is the primary language; Python is used only for matplotlib plots.
+Java is the core language (data model, effort %, decision tree). Python is a wrapper around it (decided 2026-11-09,
+confirmed with the instructor): it reads and cleans the CSV files (e.g. Google Forms exports), passes the data to Java,
+and handles the output (agreement %, matplotlib graphs). Vitor writes the Python wrapper.
 
 ## Current plan (from the Sprint 2 literature review, 2026-11-01)
 
@@ -92,6 +98,29 @@ When a session produces something the team adopts, remind the user to add a disc
 - Classifier input fields (2026-11-02): distance, intensity, rest. Intensity = effort % calculated from the swimmer's
   race best (race best / actual time x 100).
 
+## Vitor's task plan (made 2026-11-11, by priority)
+
+Done on branch `data-model`: enums (StrokeType, BestKind, StartType), RaceBest, SwimSet, Workout (+ tests for the first
+three; WorkoutTest in progress, helper `setAtPosition`).
+1. Finish WorkoutTest (13 cases), fix pom (`maven.compiler.release` 21), commit + push.
+2. Sync with Owen: status of his tree; handover contract (distance, average rest, effort % per set); clean CSV
+   columns; performance experiment (e.g. hash lookup vs list search) yes/no.
+3. Best-time lookup (HashMap, record key, Optional; race > test > none; duplicates -> faster) + set effort % + tests.
+4. Open the pull request data-model -> main for Owen's review.
+5. Example data: hand-written clean CSVs (10-20 sets, best times); test set with reference categories from the
+   literature, decided independently of Owen's rules (with Owen).
+6. Java entry point: read clean CSVs, build objects, run the tree, write results CSV; `mvn package` -> jar
+   (needs Owen's tree).
+7. Python wrapper: raw CSV -> clean CSV (time conversion), run the jar via subprocess, agreement % + first graph.
+8. Later: Google Form; AI-use disclosure notes for Sprint 3.
+Status 2026-11-12: tasks 1-3 done (36 tests, pushed). Repo renamed to training-log-project; local folder kept as
+training-log-api. Progress summary + questions for Owen: `docs/My Work So Far - Vitor.docx` (renamed from the meeting agenda on
+2026-11-16; repo access is open for Owen). Shared with Owen on 2026-11-16; answers expected 2026-11-17. Now on task 5 (best-time lookup + effort %).
+Status 2026-11-16: BestKey + BestTimes (addBestTime keeps faster; findReferenceTime race -> test -> empty;
+bestTimesCount) done, BestTimesTest with 11 tests; 47 tests total passing. Next: SwimSet.averageEffort(referenceTime).
+Status 2026-11-17: SwimSet.averageEffort(referenceTime) done with 4 tests; 51 tests passing. Data model complete.
+Owen has not answered "My Work So Far" yet; no classifier code from him in the repo.
+
 ## Data model decisions (2026-10-27)
 
 Made for the earlier plan. The set-level fields still inform the MVP's logging format; the pairing and scoring
@@ -132,7 +161,9 @@ He agreed his plans can be used (anonymized); no example practice yet.
 ## Open decisions (as of 2026-11-01)
 
 1. Maven project set up in `training-log/` (Java 21, JUnit 5.11.4; builds with `mvn test`). Packages agreed:
-   `model` (Vitor), `classifier` (Owen), `io` (CSV reading).
+   `model` (Vitor), `classifier` (Owen), `io` (CSV reading). With the Python wrapper, the messy CSV reading moves to
+   Python; still open: exactly how Python passes the data to Java (e.g. a clean CSV file + `java -jar` via subprocess)
+   and what remains in the Java `io` package.
    Owen suggested perceived effort (RPE) and closeness to a goal time; the team kept effort % from race best as the
    only intensity measure (2026-11-02).
 2. Intensity = effort % from race best (decided). Storage decided 2026-11-02 (option A): the CSV stores raw data
@@ -154,6 +185,14 @@ He agreed his plans can be used (anonymized); no example practice yet.
    (not the effort of the average time). Why: consistent with average rest, every rep counts equally (the coach says
    each effort matters), simple to explain and test. Median is a possible later comparison.
    Shared design doc for Owen: `docs/Data Model - Swim Set.docx` (2026-11-04).
+   Workout design (2026-11-10): a mixed set (e.g. 6x12.5 @30 + 100 easy + broken 100 + ..., swum twice) is split into
+   parts, each part = one SwimSet (one distance, stroke, interval), logged in order; a repeated set continues the
+   positions (second time through = next numbers). Easy swims between efforts are NOT logged (treated like
+   warm-up/cool-down). Recovery practices ARE logged (their sets are easy swimming, low effort). A workout has at
+   least one set. Set positions in a workout must have no gaps and no duplicates (1, 2, 3, ...).
+   Rep distance (and best-time distance) changes from int to double so 12.5 yd can be logged.
+   In code the SwimSet position field is currently named `round` (suggested rename to `position`: "round" now
+   sounds like a repetition of a set).
    Race/test best table (2026-11-04): a swimmer can have both a race best and a test best for the same stroke and
    distance; effort % uses the race best when one exists, otherwise the test best. Each best records its start
    (dive or push) for transparency only, no adjustment (push vs dive is a stated limitation). Only the latest best is
