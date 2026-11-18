@@ -118,6 +118,8 @@ training-log-api. Progress summary + questions for Owen: `docs/My Work So Far - 
 2026-11-16; repo access is open for Owen). Shared with Owen on 2026-11-16; answers expected 2026-11-17. Now on task 5 (best-time lookup + effort %).
 Status 2026-11-16: BestKey + BestTimes (addBestTime keeps faster; findReferenceTime race -> test -> empty;
 bestTimesCount) done, BestTimesTest with 11 tests; 47 tests total passing. Next: SwimSet.averageEffort(referenceTime).
+Status 2026-11-17: SwimSet.averageEffort(referenceTime) done with 4 tests; 51 tests passing. Data model complete.
+Owen has not answered "My Work So Far" yet; no classifier code from him in the repo.
 
 ## Data model decisions (2026-10-27)
 
