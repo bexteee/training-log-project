@@ -129,6 +129,14 @@ repo). Practices to log: Tue Nov 17, Fri Nov 20, Sat Nov 21 (race practices, com
 Status 2026-11-19: first responses checked (11 best times, 2 sets), no input fixes needed. The wrapper must handle: a
 blank row, times as number or "m:ss.hh" text, send-off "m:ss" text, rep times "a, b, c", set number as 1.0.
 Deadline for swimmers' responses: Saturday Nov 21 afternoon, then the first test run.
+Status 2026-11-21: PR data-model -> main merged; working on branch `python-wrapper`. Data contract committed (headers
+only, hand-written by Vitor): `data/clean/sets.csv` (swimmer_id, practice_date, set_number, stroke, rep_distance,
+send_off_in_seconds, rep_times; one row per set, rep times separated by ";", stroke/kind/start as enum names, dates ISO)
+and `data/clean/best_times.csv` (swimmer_id, stroke, distance, kind, start, best_time_in_seconds, date_swum).
+Flow: raw form exports in `data/raw/` -> Python cleans -> `data/clean/` -> java -jar (paths as args) ->
+`data/results/` -> Python joins with labels -> agreement %. Test-set labels: `data/reference-labels.csv`
+(swimmer_id, practice_date, set_number, reference_zone, reason, source, confidence, labeled_by, date_labeled), zones
+AEROBIC / AEROBIC_POWER / ANAEROBIC, labeled by Vitor from the literature before any tree code; 1 set labeled so far.
 
 ## Data model decisions (2026-10-27)
 
