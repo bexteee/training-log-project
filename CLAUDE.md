@@ -120,6 +120,15 @@ Status 2026-11-16: BestKey + BestTimes (addBestTime keeps faster; findReferenceT
 bestTimesCount) done, BestTimesTest with 11 tests; 47 tests total passing. Next: SwimSet.averageEffort(referenceTime).
 Status 2026-11-17: SwimSet.averageEffort(referenceTime) done with 4 tests; 51 tests passing. Data model complete.
 Owen has not answered "My Work So Far" yet; no classifier code from him in the repo.
+Pull request data-model -> main opened 2026-11-17 (Owen as reviewer; not merged).
+Plan 2026-11-18: build a SMALL decision tree first (fewer zones, add detail later); Python wrapper done by the end of
+the weekend (Nov 22); Google Forms (best times + set log) sent to 6 swimmers by Friday Nov 20 to collect real data.
+Forms published and emailed 2026-11-18: Best Times https://forms.gle/CmomCEc3xQV3R3qK9 , Set Log
+https://forms.gle/c8gXcFFyoX9YgUU76 . Swimmers A01-A06 (name-to-ID list kept privately by Vitor and Owen, never in the
+repo). Practices to log: Tue Nov 17, Fri Nov 20, Sat Nov 21 (race practices, comparable with season bests).
+Status 2026-11-19: first responses checked (11 best times, 2 sets), no input fixes needed. The wrapper must handle: a
+blank row, times as number or "m:ss.hh" text, send-off "m:ss" text, rep times "a, b, c", set number as 1.0.
+Deadline for swimmers' responses: Saturday Nov 21 afternoon, then the first test run.
 
 ## Data model decisions (2026-10-27)
 
