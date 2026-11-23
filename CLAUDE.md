@@ -137,6 +137,17 @@ Flow: raw form exports in `data/raw/` -> Python cleans -> `data/clean/` -> java 
 `data/results/` -> Python joins with labels -> agreement %. Test-set labels: `data/reference-labels.csv`
 (swimmer_id, practice_date, set_number, reference_zone, reason, source, confidence, labeled_by, date_labeled), zones
 AEROBIC / AEROBIC_POWER / ANAEROBIC, labeled by Vitor from the literature before any tree code; 1 set labeled so far.
+Status 2026-11-22: `wrapper/clean_data.py` (Vitor) has time_from_txt_to_float, times_from_txt_to_list,
+datetime_from_str_to_iso_text (M/D/YYYY -> ISO), clean_row (best times) and write_each_clean_row (read raw, skip fully
+blank rows, write clean). Best times cleaning works (13 rows -> data/clean/best_times.csv, committed). Empty values
+raise ValueError (fail fast). A02's 100 fly times (TEST 53.5 on 2026-11-21, RACE 1:00.05) are both correct per Vitor;
+race-first rule makes his 53.5 set ~112% effort (expected outlier).
+Status 2026-11-22 (later): Set Log cleaning done (set_clean_row; write_each_set_log_clean_row, a second writer function
+by choice). Equipment = Yes rows are skipped in Python with a printed "Skipped <id> <date> set <n>: equipment used"
+message (contract unchanged). 16 raw sets -> 15 in data/clean/sets.csv (A03 equipment set skipped). Raw -> clean half of
+the wrapper complete. Data issues to raise with swimmers: A06 2026-11-21 set 1 looks like a mixed set logged as one
+(250 @0:00 with 3 different-length reps; Java rejects send-off 0); A05 2026-11-17 set 1 mixes easy 35s with two fast
+50s; A05 has no 25 fly/back/breast bests (missing reference); A01 and A04 have no data.
 
 ## Data model decisions (2026-10-27)
 
