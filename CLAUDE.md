@@ -87,6 +87,28 @@ When a session produces something the team adopts, remind the user to add a disc
   (each member presents >= 1 source). It answers: what did we achieve, what did we plan but not achieve,
   what will we do in Sprint 3.
 - Sprint 3: about one month; targets listed under "Current plan".
+  Sprint 2 feedback (instructor email, read 2026-11-23): results sprint (Sprint 3) was DUE Fri 2026-11-20. Points:
+  set up `thirdsprint/` in the project GDrive + link the whole GDrive (papers, data); MEASUREMENT TRAP: reference
+  labels must be independent of the rules (rules from Fernandes -> labels from the coach labeling blind, or a second
+  scheme such as Pollock et al. 2019), so labels citing Fernandes are circular; define "effort" as a loggable number
+  and map it onto Fernandes's intensity domains; verify the Okicic et al. annotation (show the page); text must be in
+  the team's own words, add WHEN Claude was used to the AI statement; course connection = symbol table (textbook 4.4)
+  keyed by date or category + counting per category; still need a training plan from the coach. Presenting: start
+  with the goal in plain words, talk instead of reading.
+  Decided 2026-11-23 (Vitor + Owen, sprint review): reference labels come from Coach Makepeace, labeling the logged
+  sets blind (no classifier output shown). The Fernandes-based A06 label in data/reference-labels.csv is replaced by
+  the coach's label (labeled_by = coach). Sprint 3 submission planned for the night of 2026-11-23.
+  Tree categories, DRAFT (Vitor + Owen, 2026-11-23): aerobic = effort 60-75%, hybrid = 76-90%, anaerobic = 92%+
+  ("hybrid" replaces AEROBIC_POWER; labels file and coach request must use the same names). Open when building the
+  tree: gaps (<60, 75-76, 90-92), a source for each cutoff, whether distance and rest also split.
+  Sprint 3 document reviewed 2026-11-23 (Claude drafted revised wording for sections 1, 3, 5, 6, 7, 8c and the AI
+  statement, disclosed in the statement). Decision to-do list lives in the report doc
+  https://claude.ai/artifact/DvAtRgiECMzpoeX9uZRV2r ("Decision to-do list" section).
+  Vitor's work order from 2026-11-24 on: (1) push/dive change (Set Log form question, ask swimmers, Python `start`
+  column, Java SwimSet/BestKey/BestTimes + tests); (2) back to BestTimesReaderTest (file belongs in
+  src/test/java/edu/augustana/traininglog/io/, helper with varargs rows, 7 planned cases); (3) decision tree, starting
+  with the saved category questions (gaps, sources, mapping to Fernandes, extra splits, names).
+  Work branch: `java-entry-point` (stacked on `python-wrapper`, whose PR to main is open).
 - Final presentations: 2026-11-27, 11-30, 12-02 or 12-04.
 
 ## Work split (decided 2026-10-29)
@@ -227,6 +249,14 @@ He agreed his plans can be used (anonymized); no example practice yet.
    kept, with the date it was swum (replaced when the swimmer improves). A set with no matching best is skipped (not
    classified) and reported as "missing reference time".
    Key = athlete + stroke + distance + kind (RACE/TEST); start = DIVE/PUSH; date = when swum (not in the future).
+   CHANGED 2026-11-23 (Vitor): push and dive bests are now distinguished. Each logged set records its start (new
+   required Set Log question "Start: dive or push"; new `start` column in data/clean/sets.csv; SwimSet gets a
+   StartType). BestKey adds start. Lookup for a set: same start first (race, then test); if none, fall back to the
+   other start (race, then test) and flag the set `start_mismatch`; none at all -> "missing reference time".
+   Agreement % is reported separately for matched vs mismatched sets. The 16 sets logged before the change get their
+   start by asking each swimmer (no guessing). Why: practice reps are mostly from a push while race bests are from a
+   dive, so comparing them underestimates effort, most on 25s/50s. Open: how to log backstroke race starts (in-water).
+   Not yet implemented (BestTimes/BestKey/SwimSet and their tests change in a separate step).
    Duplicate rows for the same key: use the faster time. Limitation accepted for the MVP: workouts before a best's
    date are measured against the newer (faster) best; keeping dated history is a stretch goal (or fix manually).
    Short reps (e.g. 15 or 25 yd) have no race distance, so the race-best table also holds "test bests" (fastest

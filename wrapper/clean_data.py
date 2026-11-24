@@ -14,24 +14,27 @@ def write_each_best_times_clean_row(raw_file_path, clean_file_path):
       if any(row.values()):
         writer.writerow(best_times_clean_row(row))
         
-# function that cleans each set log raw row and writes it to a clean file, it also skips blank rows
+# function that cleans each set log raw row and writes it to a clean file, it skips 3 kinds - blank rows, if equipment was used and if start is missing
 def write_each_set_log_clean_row(raw_file_path, clean_file_path):
   with open(raw_file_path, newline="") as inFile, open(clean_file_path, "w", newline="") as outFile:
     
     reader = csv.DictReader(inFile)
     
-    writer = csv.DictWriter(outFile, fieldnames=['swimmer_id', 'practice_date', 'set_number', 'stroke', 'rep_distance', 'send_off_in_seconds', 'rep_times'])
+    writer = csv.DictWriter(outFile, fieldnames=['swimmer_id', 'practice_date', 'set_number', 'stroke', 'start', 'rep_distance', 'send_off_in_seconds', 'rep_times'])
     
     writer.writeheader()
     
     for row in reader:
-      if row['Did you use fins, paddles or other equipment?'].strip() == 'Yes':
-        print(f"Skipped {row['Swimmer ID']} {row['Practice date']} set {row['Set number today']}: equipment used")
-      elif any(row.values()):
-        writer.writerow(set_clean_row(row))
+      if any(row.values()):
         
+        if row['Did you use fins, paddles or other equipment?'].strip() == 'Yes':
+          print(f"Skipped {row['Swimmer ID']} {row['Practice date']} set {row['Set number today']}: equipment used")
+
+        elif row['Start'].strip() == "":
+          print(f"Skipped {row['Swimmer ID']} {row['Practice date']} set {row['Set number today']}: start is missing")
         
-        
+        else:
+          writer.writerow(set_clean_row(row))
 
 # function to convert time data from text to float
 def time_from_txt_to_float(time: str) -> float:
@@ -91,6 +94,7 @@ def set_clean_row(row: dict) -> dict:
     "practice_date" : datetime_from_str_to_iso_text(row["Practice date"]),
     "set_number" : row["Set number today"].strip(),
     "stroke" : row["Stroke"].upper().strip(),
+    "start" : row['Start'].strip().upper(),
     "rep_distance" : row["Rep distance (yards)"].strip(),
     "send_off_in_seconds" : time_from_txt_to_float(row['Send-off interval (the "@")']),
     "rep_times" : ";".join(txt_rep_times)
