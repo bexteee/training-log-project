@@ -181,4 +181,70 @@ class BestTimesTest {
 
     assertThrows(IllegalArgumentException.class, () -> bestTimes.addBestTime(null));
   }
+
+  // a push set with only a dive race best uses that best, flagged as a start mismatch
+  @Test
+  void otherStartRaceUsedWhenNoSameStart() {
+    BestTimes bestTimes = new BestTimes();
+
+    bestTimes.addBestTime(createRaceBest(50, BestKind.RACE, 23.00, StartType.DIVE));
+
+    Optional<ReferenceTime> bestTime = bestTimes.findReferenceTime("A01", StrokeType.FREESTYLE, 50, StartType.PUSH);
+
+    assertTrue(bestTime.isPresent());
+
+    assertEquals(23.00, bestTime.get().time(), 0.001);
+
+    assertFalse(bestTime.get().startMatch());
+  }
+
+  // a dive set with only a push race best uses that best, flagged as a start mismatch
+  @Test
+  void otherStartRaceUsedWhenNoSameStartForDiveSet() {
+    BestTimes bestTimes = new BestTimes();
+
+    bestTimes.addBestTime(createRaceBest(50, BestKind.RACE, 23.40, StartType.PUSH));
+
+    Optional<ReferenceTime> bestTime = bestTimes.findReferenceTime("A01", StrokeType.FREESTYLE, 50, StartType.DIVE);
+
+    assertTrue(bestTime.isPresent());
+
+    assertEquals(23.40, bestTime.get().time(), 0.001);
+
+    assertFalse(bestTime.get().startMatch());
+  }
+
+  // a push set with only a dive test best uses that best, flagged as a mismatch.
+  @Test
+  void otherStartTestUsedWhenNoSameStart() {
+    BestTimes bestTimes = new BestTimes();
+
+    bestTimes.addBestTime(createRaceBest(50, BestKind.TEST, 23.40, StartType.DIVE));
+
+    Optional<ReferenceTime> bestTime = bestTimes.findReferenceTime("A01", StrokeType.FREESTYLE, 50, StartType.PUSH);
+
+    assertTrue(bestTime.isPresent());
+
+    assertEquals(23.40, bestTime.get().time(), 0.001);
+
+    assertFalse(bestTime.get().startMatch());
+  }
+
+  // tests if a same-start test best is chosen over an other-start race best, even when the race best is faster.
+  @Test
+  void startBeatsKind() {
+    BestTimes bestTimes = new BestTimes();
+
+    bestTimes.addBestTime(createRaceBest(50, BestKind.RACE, 23.00, StartType.DIVE));
+
+    bestTimes.addBestTime(createRaceBest(50, BestKind.TEST, 24.50, StartType.PUSH));
+
+    Optional<ReferenceTime> bestTime = bestTimes.findReferenceTime("A01", StrokeType.FREESTYLE, 50, StartType.PUSH);
+
+    assertTrue(bestTime.isPresent());
+
+    assertEquals(24.50, bestTime.get().time(), 0.001);
+
+    assertTrue(bestTime.get().startMatch());
+  }
 }
