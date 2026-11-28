@@ -87,6 +87,28 @@ When a session produces something the team adopts, remind the user to add a disc
   (each member presents >= 1 source). It answers: what did we achieve, what did we plan but not achieve,
   what will we do in Sprint 3.
 - Sprint 3: about one month; targets listed under "Current plan".
+  Sprint 2 feedback (instructor email, read 2026-11-23): results sprint (Sprint 3) was DUE Fri 2026-11-20. Points:
+  set up `thirdsprint/` in the project GDrive + link the whole GDrive (papers, data); MEASUREMENT TRAP: reference
+  labels must be independent of the rules (rules from Fernandes -> labels from the coach labeling blind, or a second
+  scheme such as Pollock et al. 2019), so labels citing Fernandes are circular; define "effort" as a loggable number
+  and map it onto Fernandes's intensity domains; verify the Okicic et al. annotation (show the page); text must be in
+  the team's own words, add WHEN Claude was used to the AI statement; course connection = symbol table (textbook 4.4)
+  keyed by date or category + counting per category; still need a training plan from the coach. Presenting: start
+  with the goal in plain words, talk instead of reading.
+  Decided 2026-11-23 (Vitor + Owen, sprint review): reference labels come from Coach Makepeace, labeling the logged
+  sets blind (no classifier output shown). The Fernandes-based A06 label in data/reference-labels.csv is replaced by
+  the coach's label (labeled_by = coach). Sprint 3 submission planned for the night of 2026-11-23.
+  Tree categories, DRAFT (Vitor + Owen, 2026-11-23): aerobic = effort 60-75%, hybrid = 76-90%, anaerobic = 92%+
+  ("hybrid" replaces AEROBIC_POWER; labels file and coach request must use the same names). Open when building the
+  tree: gaps (<60, 75-76, 90-92), a source for each cutoff, whether distance and rest also split.
+  Sprint 3 document reviewed 2026-11-23 (Claude drafted revised wording for sections 1, 3, 5, 6, 7, 8c and the AI
+  statement, disclosed in the statement). Decision to-do list lives in the report doc
+  https://claude.ai/artifact/DvAtRgiECMzpoeX9uZRV2r ("Decision to-do list" section).
+  Vitor's work order from 2026-11-24 on: (1) push/dive change (Set Log form question, ask swimmers, Python `start`
+  column, Java SwimSet/BestKey/BestTimes + tests); (2) back to BestTimesReaderTest (file belongs in
+  src/test/java/edu/augustana/traininglog/io/, helper with varargs rows, 7 planned cases); (3) decision tree, starting
+  with the saved category questions (gaps, sources, mapping to Fernandes, extra splits, names).
+  Work branch: `java-entry-point` (stacked on `python-wrapper`, whose PR to main is open).
 - Final presentations: 2026-11-27, 11-30, 12-02 or 12-04.
 
 ## Work split (decided 2026-10-29)
@@ -120,6 +142,34 @@ Status 2026-11-16: BestKey + BestTimes (addBestTime keeps faster; findReferenceT
 bestTimesCount) done, BestTimesTest with 11 tests; 47 tests total passing. Next: SwimSet.averageEffort(referenceTime).
 Status 2026-11-17: SwimSet.averageEffort(referenceTime) done with 4 tests; 51 tests passing. Data model complete.
 Owen has not answered "My Work So Far" yet; no classifier code from him in the repo.
+Pull request data-model -> main opened 2026-11-17 (Owen as reviewer; not merged).
+Plan 2026-11-18: build a SMALL decision tree first (fewer zones, add detail later); Python wrapper done by the end of
+the weekend (Nov 22); Google Forms (best times + set log) sent to 6 swimmers by Friday Nov 20 to collect real data.
+Forms published and emailed 2026-11-18: Best Times https://forms.gle/CmomCEc3xQV3R3qK9 , Set Log
+https://forms.gle/c8gXcFFyoX9YgUU76 . Swimmers A01-A06 (name-to-ID list kept privately by Vitor and Owen, never in the
+repo). Practices to log: Tue Nov 17, Fri Nov 20, Sat Nov 21 (race practices, comparable with season bests).
+Status 2026-11-19: first responses checked (11 best times, 2 sets), no input fixes needed. The wrapper must handle: a
+blank row, times as number or "m:ss.hh" text, send-off "m:ss" text, rep times "a, b, c", set number as 1.0.
+Deadline for swimmers' responses: Saturday Nov 21 afternoon, then the first test run.
+Status 2026-11-21: PR data-model -> main merged; working on branch `python-wrapper`. Data contract committed (headers
+only, hand-written by Vitor): `data/clean/sets.csv` (swimmer_id, practice_date, set_number, stroke, rep_distance,
+send_off_in_seconds, rep_times; one row per set, rep times separated by ";", stroke/kind/start as enum names, dates ISO)
+and `data/clean/best_times.csv` (swimmer_id, stroke, distance, kind, start, best_time_in_seconds, date_swum).
+Flow: raw form exports in `data/raw/` -> Python cleans -> `data/clean/` -> java -jar (paths as args) ->
+`data/results/` -> Python joins with labels -> agreement %. Test-set labels: `data/reference-labels.csv`
+(swimmer_id, practice_date, set_number, reference_zone, reason, source, confidence, labeled_by, date_labeled), zones
+AEROBIC / AEROBIC_POWER / ANAEROBIC, labeled by Vitor from the literature before any tree code; 1 set labeled so far.
+Status 2026-11-22: `wrapper/clean_data.py` (Vitor) has time_from_txt_to_float, times_from_txt_to_list,
+datetime_from_str_to_iso_text (M/D/YYYY -> ISO), clean_row (best times) and write_each_clean_row (read raw, skip fully
+blank rows, write clean). Best times cleaning works (13 rows -> data/clean/best_times.csv, committed). Empty values
+raise ValueError (fail fast). A02's 100 fly times (TEST 53.5 on 2026-11-21, RACE 1:00.05) are both correct per Vitor;
+race-first rule makes his 53.5 set ~112% effort (expected outlier).
+Status 2026-11-22 (later): Set Log cleaning done (set_clean_row; write_each_set_log_clean_row, a second writer function
+by choice). Equipment = Yes rows are skipped in Python with a printed "Skipped <id> <date> set <n>: equipment used"
+message (contract unchanged). 16 raw sets -> 15 in data/clean/sets.csv (A03 equipment set skipped). Raw -> clean half of
+the wrapper complete. Data issues to raise with swimmers: A06 2026-11-21 set 1 looks like a mixed set logged as one
+(250 @0:00 with 3 different-length reps; Java rejects send-off 0); A05 2026-11-17 set 1 mixes easy 35s with two fast
+50s; A05 has no 25 fly/back/breast bests (missing reference); A01 and A04 have no data.
 
 ## Data model decisions (2026-10-27)
 
@@ -199,6 +249,14 @@ He agreed his plans can be used (anonymized); no example practice yet.
    kept, with the date it was swum (replaced when the swimmer improves). A set with no matching best is skipped (not
    classified) and reported as "missing reference time".
    Key = athlete + stroke + distance + kind (RACE/TEST); start = DIVE/PUSH; date = when swum (not in the future).
+   CHANGED 2026-11-23 (Vitor): push and dive bests are now distinguished. Each logged set records its start (new
+   required Set Log question "Start: dive or push"; new `start` column in data/clean/sets.csv; SwimSet gets a
+   StartType). BestKey adds start. Lookup for a set: same start first (race, then test); if none, fall back to the
+   other start (race, then test) and flag the set `start_mismatch`; none at all -> "missing reference time".
+   Agreement % is reported separately for matched vs mismatched sets. The 16 sets logged before the change get their
+   start by asking each swimmer (no guessing). Why: practice reps are mostly from a push while race bests are from a
+   dive, so comparing them underestimates effort, most on 25s/50s. Open: how to log backstroke race starts (in-water).
+   Not yet implemented (BestTimes/BestKey/SwimSet and their tests change in a separate step).
    Duplicate rows for the same key: use the faster time. Limitation accepted for the MVP: workouts before a best's
    date are measured against the newer (faster) best; keeping dated history is a stretch goal (or fix manually).
    Short reps (e.g. 15 or 25 yd) have no race distance, so the race-best table also holds "test bests" (fastest
