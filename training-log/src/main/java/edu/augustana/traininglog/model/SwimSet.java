@@ -1,35 +1,41 @@
 package edu.augustana.traininglog.model;
+
 import java.util.List;
 
-public record SwimSet(int position, StrokeType stroke, double repDistance, double sendOffInterval, List<Double> repTimes) {
+public record SwimSet(int position, StrokeType stroke, StartType start, double repDistance, double sendOffInterval,
+    List<Double> repTimes) {
   // constructor with validation and then copy
   public SwimSet {
 
     // check to see if position input is less than 1
-    if(position < 1) {
+    if (position < 1) {
       throw new IllegalArgumentException("set position must be at least 1.");
     }
 
     // check to see if the stroke input is null
-    if(stroke == null) {
+    if (stroke == null) {
       throw new IllegalArgumentException("stroke type must be: FREESTYLE, BACKSTROKE, BREASTSTROKE or BUTTERFLY.");
     }
 
-    if(repDistance <= 0.0) {
+    if (start == null) {
+      throw new IllegalArgumentException("start type must be: PUSH or DIVE");
+    }
+
+    if (repDistance <= 0.0) {
       throw new IllegalArgumentException("rep distance must be greater than 0.");
     }
 
-    if(sendOffInterval <= 0) {
+    if (sendOffInterval <= 0) {
       throw new IllegalArgumentException("send-off interval must be greater than 0");
     }
 
     // repTimes check 1: if the list is null
-    if(repTimes == null) {
+    if (repTimes == null) {
       throw new IllegalArgumentException("rep times list must not be null.");
     }
 
     // repTimes check 2: if the list is empty
-    if(repTimes.isEmpty()) {
+    if (repTimes.isEmpty()) {
       throw new IllegalArgumentException("rep times list must not be empty");
     }
 
@@ -37,7 +43,7 @@ public record SwimSet(int position, StrokeType stroke, double repDistance, doubl
     // loop that runs through the reptimes list
     // used Double object type so it can be compared to null
     for (Double time : repTimes) {
-      if(time == null || time <= 0) {
+      if (time == null || time <= 0) {
         throw new IllegalArgumentException("times must be inputted as doubles and cannot be less or equal to 0.");
       }
     }
@@ -66,13 +72,13 @@ public record SwimSet(int position, StrokeType stroke, double repDistance, doubl
 
   // average effort % of the set, takes the swimmer's reference time
   public double averageEffort(double referenceTime) {
-    if(referenceTime <= 0) {
+    if (referenceTime <= 0) {
       throw new IllegalArgumentException("reference Time must be greater than 0.");
     }
 
     double efforts = 0.0;
 
-    for(double repTime : repTimes) {
+    for (double repTime : repTimes) {
       efforts += (referenceTime / repTime) * 100;
     }
 
