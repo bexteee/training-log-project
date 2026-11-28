@@ -51,7 +51,7 @@ benchmark returns as the algorithms/performance part of the project is not decid
 
 The bioflexible periodization book (Silva & Affonso, 2026, Editora Dialética) was considered but not used as a source.
 
-## Rules for Claude (course AI policy — non-negotiable)
+## Rules for Claude (the TEAM's AI rule, stricter than the course requires — non-negotiable)
 
 Claude does NOT write code for this project. This covers Java and Python source, tests, the benchmark harness,
 the synthetic data generator and plotting scripts.
@@ -67,6 +67,12 @@ Claude must NOT:
 - Edit or create `.java`, `.py` or `.ipynb` files (also enforced in `.claude/settings.json`), including via shell commands.
 - Paste project-specific implementations in chat, even "just as a sketch".
 - Run `/code-review --fix` or apply review findings itself.
+
+Teaching exception (instructor, meeting 2026-11-24, reported by Vitor 2026-11-25): Claude may TEACH decision trees.
+It may read the professor's handout and Colab notebook, simplify them, and make learning material with GENERIC
+examples (toy datasets, not the project's swim data, features, labels or pipeline). The project's own tree code
+(training, evaluation, agreement %) is still written by Vitor/Owen. Notebook files stay blocked for Claude in
+`.claude/settings.json`: lessons are delivered as Markdown/HTML or chat, and the user makes any notebook themselves.
 
 Every team member must be able to explain and reproduce any part of the codebase without AI (Sprint 4 spot-checks).
 The files under `.claude/` are team tooling, not project code, and their creation is recorded in the AI-use log.
@@ -109,6 +115,49 @@ When a session produces something the team adopts, remind the user to add a disc
   src/test/java/edu/augustana/traininglog/io/, helper with varargs rows, 7 planned cases); (3) decision tree, starting
   with the saved category questions (gaps, sources, mapping to Fernandes, extra splits, names).
   Work branch: `java-entry-point` (stacked on `python-wrapper`, whose PR to main is open).
+  Status 2026-11-24: push/dive in Java done and committed: BestKey has start; new record ReferenceTime(time,
+  startMatch); BestTimes.findReferenceTime(athlete, stroke, distance, setStart) -> Optional<ReferenceTime> via private
+  helper lookUpKindAndStart (same start race -> test, then other start race -> test with startMatch false, else empty);
+  BestTimesTest updated (52 tests passing). Plan for 2026-11-25 (trimmed for time, presentations start Nov 27):
+  4 push/dive tests only (start beats kind; only other-start race; only other-start test; dive set falls back to push),
+  fill in the swimmers' Start answers + re-export + re-clean, BestTimesReaderTest (cut to ~3 cases if short on time),
+  then Vitor brings the professor's decision-tree guidance (meeting 2026-11-24). Risk: Owen's tree is the critical
+  path to a first agreement % and is not in the repo yet; check in with him.
+  Professor meeting 2026-11-24 (reported by Vitor 2026-11-25): build the decision tree in Python, possibly with
+  scikit-learn (a learned tree, supervised learning). Not yet decided with Owen: replace the hand-built tree or run
+  both and compare. Task type = classification (target = category), not regression. Concern: only ~25 logged sets,
+  so a learned tree needs cross-validation (e.g. leave-one-out) and a majority-class baseline.
+  Professor's follow-up email "Decision Tree" (2026-11-24, Owen cc'd): example handout
+  https://github.com/birkenkrahe/cosc_3430_fall_26/blob/main/pdf/2a_diagnosis_decision_tree_handout.pdf , runnable Colab
+  https://colab.research.google.com/drive/17dXYC4nexGJhyLkG1W7UFga9Nkq5D4Xs , DataCamp course "Machine Learning with
+  Tree-Based Models in Python" (untried by him); Gini = probability two rows in a node have different classes, 0 at a
+  pure leaf. He offered a private project presentation in finals week, best Wed 2026-12-09 1-3 pm (reply pending).
+  Team's class presentation date: 2026-12-02.
+  Status 2026-11-26: 4 push/dive fallback tests committed; BestTimesReaderTest done in src/test/java/.../io/ (helper
+  writesBestTimes(String... rows) with @TempDir + 4 tests: one row, header only, several rows, missing file throws);
+  60 tests passing. Next: swimmers' Start answers -> re-export/re-clean; then decision-tree lessons (generic) and the
+  learned tree in Python.
+  Sprint 3 feedback (instructor email, read 2026-11-27): late submission accepted without penalty; 2 points deducted
+  (only the report was submitted, no link to all materials; "What you built" was a bare link to branch data-model and
+  the README doesn't say what runs or how; AI statement lacks what the team verified itself; no reference list).
+  Also: no title; Results was a done-list without a table -> add a table of collected data (sets and best times per
+  swimmer, or sets per stroke) counted with the symbol table; all commits come from one account, so each member
+  presents a part, including code. AI writing code is allowed by the course (report it, explain every line); the
+  no-AI-code rule is the TEAM's own rule. Decision tree = stretch goal, not needed for the presentation; if done:
+  written by the team as a few nested ifs on distance, effort and rest (no extra material needed).
+  Presentation sprint: recorded 10-15 min online, OR a 30-min meeting Wed 2026-12-09 in FSC 372 (book on Canvas page
+  "Optional: show me what you got on Wed Dec 9th"; both members must attend). Bring: AI use, research question, the
+  program running, results. HARD DEADLINE for all materials (slides, code, recording if any), one accessible link:
+  Fri 2026-12-04 11:59 pm, also for the Dec 9 meeting; missing or inaccessible = 0 points.
+  Decided 2026-11-27 (Vitor): the team takes the Dec 9 meeting, with slides. Vitor presents the demo (he built the
+  code); Owen takes the rest (report fixes, slides, etc.); what to say/show is planned later. Swimmers' Dive/Push
+  answers expected 2026-11-28 (needed for the results table, since data/clean/sets.csv is empty until then).
+  Vitor still wants the decision tree as a learning goal: generic lessons first, then the team writes it as nested
+  ifs (instructor's advice), after the required items. Plan to Dec 4: (1) merge python-wrapper + java-entry-point
+  into main, (2) README (what runs, how), (3) results table (sets and best times per swimmer, sets per stroke,
+  counted with a symbol table), (4) one link to all materials (GDrive thirdsprint/), (5) report fixes (title,
+  references, AI statement with what the team verified, "team rule"), (6) Owen commits his own part, (7) slides,
+  (8) tree if time is left.
 - Final presentations: 2026-11-27, 11-30, 12-02 or 12-04.
 
 ## Work split (decided 2026-10-29)
